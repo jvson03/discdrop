@@ -13,6 +13,7 @@ param(
     [string]$Device = "",
     [string]$StagingDir = "",
     [int]$SpeedKB = 0,
+    [switch]$Eject,
     [switch]$CheckOnly
 )
 $ErrorActionPreference = "Stop"
@@ -167,6 +168,7 @@ if ($Mode -eq "Audio") {
         $stream.Close()
     }
     $format.ReleaseMedia()
+    if ($Eject) { $recorder.EjectMedia() }
     Write-Output "BURN COMPLETE"
     Write-Output "OK"
     exit 0
@@ -186,10 +188,11 @@ else {
         exit 1
     }
     $fs = New-Object -ComObject IMAPI2FS.MsftFileSystemImage
-    $fs.FileSystemsToCreate = 2   # Joliet
-    $fs.ChooseImageDefaultsForMediaType(1)  # CD-R
+    $fs.FileSystemsToCreate = 3   # ISO9660 + Joliet (Joliet alone is rejected)
+    $fs.ChooseImageDefaultsForMediaType(2)  # CD-R
     $fs.Root.AddTree($StagingDir, $false)
     $writer.Write($fs)
+    if ($Eject) { $recorder.EjectMedia() }
     Write-Output "BURN COMPLETE"
     Write-Output "OK"
     exit 0

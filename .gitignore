@@ -1,5 +1,6 @@
 venv/
 __pycache__/
 output/
+config.json
 *.pyc
 .DS_Store

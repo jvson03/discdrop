@@ -7,26 +7,57 @@
 <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-<div class="wrap">
 
-  <header>
-    <h1>DiscDrop</h1>
-    <p class="tag">Drop a playlist, get a CD.</p>
-  </header>
+<header>
+  <div class="brand">
+    <div class="logo">◉</div>
+    <div>
+      <h1>DiscDrop</h1>
+      <p>Drop a playlist, get a CD for the old car.</p>
+    </div>
+  </div>
+  <nav class="steps">
+    <span class="step active" data-s="1">1 <i>Add</i></span>
+    <span class="step" data-s="2">2 <i>Pick</i></span>
+    <span class="step" data-s="3">3 <i>Download</i></span>
+    <span class="step" data-s="4">4 <i>Burn</i></span>
+  </nav>
+</header>
 
+<main>
   <section id="s-add" class="card">
-    <h2>1 · Add songs</h2>
-    <textarea id="titles" rows="6" placeholder="One song title per line...&#10;&#10;Nirvana - Smells Like Teen Spirit&#10;Blondie - Heart of Glass"></textarea>
+    <div class="card-head">
+      <h2>1 · Add songs</h2>
+    </div>
+    <textarea id="titles" rows="6" spellcheck="false"
+      placeholder="One song title per line…&#10;&#10;Nirvana - Smells Like Teen Spirit&#10;Blondie - Heart of Glass&#10;DMX - Party Up"></textarea>
     <div class="row">
       <button id="btn-add" class="primary">Search songs</button>
-      <button id="btn-load">Load .txt</button>
+      <button id="btn-load" class="ghost">Load .txt</button>
       <input type="file" id="file" accept=".txt" hidden>
+    </div>
+    <div class="import">
+      <input id="import-url" type="text" spellcheck="false"
+        placeholder="…or paste a Spotify / Apple Music playlist link">
+      <button id="btn-import" class="ghost">Import</button>
+    </div>
+    <div id="import-note" class="warn hidden"></div>
+    <div id="spotify-creds" class="creds hidden">
+      <p class="muted">Spotify needs free API credentials — <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a> → Create App → copy the Client ID &amp; Client Secret. Stored only on this PC (<code>config.json</code>).</p>
+      <input id="sid" placeholder="Client ID" autocomplete="off">
+      <input id="ssec" type="password" placeholder="Client Secret" autocomplete="off">
+      <button id="btn-save-creds" class="mini">Save &amp; retry</button>
     </div>
     <div id="dropzone" class="dropzone">…or drop a .txt file anywhere here</div>
   </section>
 
   <section id="s-search" class="card hidden">
-    <h2>2 · Confirm matches <span id="search-count"></span></h2>
+    <div class="card-head">
+      <h2>2 · Confirm matches</h2>
+      <span id="search-count" class="chip hidden"></span>
+    </div>
+    <div id="search-note" class="warn hidden"></div>
+    <div id="match-summary" class="hidden"></div>
     <div id="search-results"></div>
     <div class="row">
       <button id="btn-download" class="primary hidden">Download selected</button>
@@ -34,40 +65,67 @@
   </section>
 
   <section id="s-dl" class="card hidden">
-    <h2>3 · Downloading</h2>
+    <div class="card-head">
+      <h2>3 · Downloading</h2>
+      <span id="dl-count" class="chip"></span>
+    </div>
     <div class="bar"><div id="dl-bar" class="bar-fill"></div></div>
-    <div id="dl-status" class="status">Waiting…</div>
+    <div id="dl-status" class="status muted">Waiting…</div>
     <div id="dl-items"></div>
   </section>
 
   <section id="s-burn" class="card hidden">
-    <h2>4 · Burn CD</h2>
-    <div class="row">
-      <label>Drive</label>
-      <select id="drive"></select>
-      <label>Type</label>
-      <select id="mode">
-        <option value="audio">Audio CD (plays in any CD player)</option>
-        <option value="data">MP3 data disc (head unit must support MP3 discs)</option>
-      </select>
-      <label>Speed</label>
-      <select id="speed">
-        <option value="0">Fastest</option>
-        <option value="750">4x (best for old stereos)</option>
-        <option value="1200">6x</option>
-        <option value="1500">8x (recommended)</option>
-      </select>
+    <div class="card-head">
+      <h2>4 · Burn the disc</h2>
+      <span id="time-info" class="chip"></span>
     </div>
-    <p id="disc-info" class="muted"></p>
-    <p id="time-info" class="muted"></p>
+
+    <div class="controls">
+      <label>Drive
+        <select id="drive"></select>
+      </label>
+      <label>Type
+        <select id="mode">
+          <option value="audio">Audio CD — plays in any player</option>
+          <option value="data">MP3 disc — needs MP3-capable stereo</option>
+        </select>
+      </label>
+      <label>Speed
+        <select id="speed">
+          <option value="0">Fastest</option>
+          <option value="750">4x — best for old stereos</option>
+          <option value="1200">6x</option>
+          <option value="1500">8x — recommended</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="disc-info" class="warn hidden"></div>
+
+    <h3 class="subhead">Playlist <span id="pl-count"></span></h3>
+    <div id="playlist"></div>
+
+    <div id="attention-block" class="hidden">
+      <h3 class="subhead">Needs attention <span id="att-count"></span></h3>
+      <div id="attention"></div>
+    </div>
+
     <div class="row">
       <button id="btn-burn" class="primary">Burn CD</button>
+      <span id="burn-hint" class="muted"></span>
     </div>
-    <div id="burn-log" class="log hidden"></div>
-  </section>
 
-  <footer class="muted">Files land in <code>output/mp3</code> and <code>output/wav</code>. For personal use.</footer>
-</div>
+    <div id="burn-box" class="hidden">
+      <div id="burn-log" class="log"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="muted">
+  Files land in <code>output/mp3</code> and <code>output/wav</code> · for personal use
+</footer>
+
+<audio id="preview" class="hidden" controls></audio>
 <script src="/static/app.js"></script>
 </body>
 </html>
