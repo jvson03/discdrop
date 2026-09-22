@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiscDrop</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>DiscDrop</h1>
+    <p class="tag">Drop a playlist, get a CD.</p>
+  </header>
+
+  <section id="s-add" class="card">
+    <h2>1 · Add songs</h2>
+    <textarea id="titles" rows="6" placeholder="One song title per line...&#10;&#10;Nirvana - Smells Like Teen Spirit&#10;Blondie - Heart of Glass"></textarea>
+    <div class="row">
+      <button id="btn-add" class="primary">Search songs</button>
+      <button id="btn-load">Load .txt</button>
+      <input type="file" id="file" accept=".txt" hidden>
+    </div>
+    <div id="dropzone" class="dropzone">…or drop a .txt file anywhere here</div>
+  </section>
+
+  <section id="s-search" class="card hidden">
+    <h2>2 · Confirm matches <span id="search-count"></span></h2>
+    <div id="search-results"></div>
+    <div class="row">
+      <button id="btn-download" class="primary hidden">Download selected</button>
+    </div>
+  </section>
+
+  <section id="s-dl" class="card hidden">
+    <h2>3 · Downloading</h2>
+    <div class="bar"><div id="dl-bar" class="bar-fill"></div></div>
+    <div id="dl-status" class="status">Waiting…</div>
+    <div id="dl-items"></div>
+  </section>
+
+  <section id="s-burn" class="card hidden">
+    <h2>4 · Burn CD</h2>
+    <div class="row">
+      <label>Drive</label>
+      <select id="drive"></select>
+      <label>Type</label>
+      <select id="mode">
+        <option value="audio">Audio CD (plays in any CD player)</option>
+        <option value="data">MP3 data disc (head unit must support MP3 discs)</option>
+      </select>
+      <label>Speed</label>
+      <select id="speed">
+        <option value="0">Fastest</option>
+        <option value="750">4x (best for old stereos)</option>
+        <option value="1200">6x</option>
+        <option value="1500">8x (recommended)</option>
+      </select>
+    </div>
+    <p id="disc-info" class="muted"></p>
+    <p id="time-info" class="muted"></p>
+    <div class="row">
+      <button id="btn-burn" class="primary">Burn CD</button>
+    </div>
+    <div id="burn-log" class="log hidden"></div>
+  </section>
+
+  <footer class="muted">Files land in <code>output/mp3</code> and <code>output/wav</code>. For personal use.</footer>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>
